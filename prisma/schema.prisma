@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Session {
+  id            String       @id @default(cuid())
+  date          DateTime
+  startTime     String
+  endTime       String
+  gradeLevel    GradeLevel
+  capacity      Int          @default(30)
+  location      String       @default("WW Law Center")
+  
+  enrollments   Enrollment[]
+  
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  @@unique([date, startTime, gradeLevel])
+  @@index([date])
+}
+
+enum GradeLevel {
+  K2
+  G35
+  G68
+  G912
+}
+
+model Student {
+  id            String       @id @default(cuid())
+  firstName     String
+  lastName      String
+  dateOfBirth   DateTime
+  gradeLevel    GradeLevel
+  
+  parentName    String
+  parentEmail   String
+  parentPhone   String
+  
+  emergencyName String
+  emergencyPhone String
+  emergencyRelation String
+  
+  allergies     String?
+  medications   String?
+  specialNeeds  String?
+  
+  enrollments   Enrollment[]
+  
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  @@index([parentEmail])
+}
+
+model Enrollment {
+  id            String          @id @default(cuid())
+  
+  studentId     String
+  student       Student         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  
+  sessionId     String
+  session       Session         @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  status        EnrollmentStatus @default(PENDING)
+  paymentStatus PaymentStatus    @default(PENDING)
+  
+  amountPaid    Int             @default(0)
+  paymentMethod String?
+  stripePaymentIntentId String? @unique
+  
+  registeredAt  DateTime        @default(now())
+  confirmedAt   DateTime?
+  cancelledAt   DateTime?
+  
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  @@unique([studentId, sessionId])
+  @@index([status])
+  @@index([paymentStatus])
+}
+
+enum EnrollmentStatus {
+  PENDING
+  CONFIRMED
+  WAITLISTED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  DEPOSIT_PAID
+  PAID_IN_FULL
+  REFUNDED
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      AdminRole @default(STAFF)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+}
