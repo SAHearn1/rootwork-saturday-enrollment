@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { promiseScholarshipInfo } from '@/lib/promise-scholarship'
+import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
 
 interface Session {
   id: string
@@ -12,10 +14,9 @@ interface Session {
   availableSpots: number
 }
 
-type GradeLevel = 'K2' | 'G35' | 'G68' | 'G912'
+type GradeLevel = 'G35' | 'G68' | 'G912'
 
 const gradeLabels: Record<GradeLevel, string> = { 
-  K2: 'K-2', 
   G35: '3-5', 
   G68: '6-8', 
   G912: '9-12' 
@@ -27,6 +28,7 @@ export default function RegisterPage() {
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedSession, setSelectedSession] = useState<string>('')
   const [loading, setLoading] = useState(true)
+  const [showScholarshipDetails, setShowScholarshipDetails] = useState(false)
 
   useEffect(() => {
     fetchSessions()
@@ -82,6 +84,93 @@ export default function RegisterPage() {
               <h1 className="text-4xl font-bold text-canvas-light mb-2">RootWork Framework</h1>
               <p className="text-gold-leaf text-lg">Saturday Enrichment Program Registration</p>
             </div>
+          </div>
+        </div>
+
+        {/* Georgia Promise Scholarship Banner */}
+        <div className="bg-gradient-to-r from-gold-leaf via-gold-leaf-light to-gold-leaf rounded-xl shadow-xl mb-6 overflow-hidden">
+          <div className="p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-3xl">🎓</span>
+                  <h2 className="text-2xl font-bold text-evergreen-dark">
+                    Georgia Promise Scholarship Available!
+                  </h2>
+                  <span className="bg-evergreen text-canvas-light px-4 py-1 rounded-full text-sm font-bold">
+                    ${promiseScholarshipInfo.amount.toLocaleString()} Available
+                  </span>
+                </div>
+                <p className="text-evergreen-dark text-lg mb-3">
+                  Eligible students zoned to 18 Savannah-Chatham County schools can receive up to ${promiseScholarshipInfo.amount.toLocaleString()} annually for educational expenses.
+                </p>
+                <button
+                  onClick={() => setShowScholarshipDetails(!showScholarshipDetails)}
+                  className="flex items-center gap-2 text-evergreen font-semibold hover:text-evergreen-dark transition-colors"
+                >
+                  {showScholarshipDetails ? (
+                    <>
+                      <ChevronUp className="w-5 h-5" />
+                      Hide Details
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-5 h-5" />
+                      Learn More About Eligibility
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {showScholarshipDetails && (
+              <div className="mt-6 pt-6 border-t-2 border-evergreen/20">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="font-bold text-evergreen mb-3 flex items-center gap-2">
+                      <span className="text-xl">✅</span>
+                      Eligible Uses
+                    </h3>
+                    <ul className="space-y-2 text-evergreen-dark">
+                      {promiseScholarshipInfo.programDetails.eligibleUses.map((use, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-gold-dark font-bold">→</span>
+                          <span>{use}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-evergreen mb-3 flex items-center gap-2">
+                      <span className="text-xl">📋</span>
+                      Requirements
+                    </h3>
+                    <ul className="space-y-2 text-evergreen-dark">
+                      {promiseScholarshipInfo.programDetails.requirements.map((req, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-gold-dark font-bold">→</span>
+                          <span>{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                <div className="mt-6 flex items-center gap-4">
+                  <a
+                    href={promiseScholarshipInfo.applicationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-evergreen text-canvas-light px-6 py-3 rounded-lg font-bold hover:bg-evergreen-dark transition-colors"
+                  >
+                    Apply Now
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                  <span className="text-evergreen-dark font-semibold">
+                    Application Deadline: {promiseScholarshipInfo.applicationDeadline}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -142,7 +231,7 @@ export default function RegisterPage() {
               <p className="text-gold-leaf text-sm">{new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
             </div>
 
-            {(['K2', 'G35', 'G68', 'G912'] as GradeLevel[]).map((gradeLevel) => {
+            {(['G35', 'G68', 'G912'] as GradeLevel[]).map((gradeLevel) => {
               const gradeSessions = selectedDateSessions.filter(s => s.gradeLevel === gradeLevel)
               if (gradeSessions.length === 0) return null
 

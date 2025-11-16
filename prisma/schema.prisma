@@ -27,7 +27,6 @@ model Session {
 }
 
 enum GradeLevel {
-  K2
   G35
   G68
   G912

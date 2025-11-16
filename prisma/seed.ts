@@ -31,20 +31,24 @@ async function main() {
     { start: '4:00 PM', end: '5:30 PM' },
   ]
 
-  const gradeLevels: GradeLevel[] = ['K2', 'G35', 'G68', 'G912']
+  const gradeLevels: { grade: GradeLevel; capacity: number }[] = [
+    { grade: 'G35', capacity: 15 },
+    { grade: 'G68', capacity: 15 },
+    { grade: 'G912', capacity: 20 },
+  ]
 
   let sessionCount = 0
 
   for (const date of januarySaturdays) {
     for (const time of timeSlots) {
-      for (const grade of gradeLevels) {
+      for (const gradeConfig of gradeLevels) {
         await prisma.session.create({
           data: {
             date,
             startTime: time.start,
             endTime: time.end,
-            gradeLevel: grade,
-            capacity: 30,
+            gradeLevel: gradeConfig.grade,
+            capacity: gradeConfig.capacity,
             location: 'WW Law Center',
           },
         })
