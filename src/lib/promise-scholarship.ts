@@ -133,7 +133,7 @@ export function checkPromiseScholarshipEligibility(
                      !receivingOtherScholarships
   
   if (isEligible) {
-    nextSteps.push('Apply at mygeorgiapromise.org between March 1 - April 15, 2025')
+    nextSteps.push('Apply at mygeorgiapromise.org between November 10 - December 12, 2025')
     nextSteps.push('Prepare proof of residency (GA driver\'s license or state ID)')
     nextSteps.push('Prepare proof of income (most recent federal 1040 tax form)')
     nextSteps.push('Prepare proof of enrollment (report card or school letter)')
@@ -149,7 +149,7 @@ export function checkPromiseScholarshipEligibility(
 
 export const promiseScholarshipInfo = {
   amount: 6500,
-  applicationDeadline: 'April 15, 2025',
+  applicationDeadline: 'December 12, 2025',
   applicationUrl: 'https://mygeorgiapromise.org',
   programDetails: {
     description: 'The Georgia Promise Scholarship provides up to $6,500 per student annually for educational expenses including private school tuition, tutoring, textbooks, and therapeutic services.',

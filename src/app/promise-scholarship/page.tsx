@@ -20,9 +20,9 @@ const PromiseScholarshipPage = () => {
       <section>
         <h2>2025 Application Timeline</h2>
         <ul>
-          <li>Q1: Application opens</li>
-          <li>Q2: Application deadline</li>
-          <li>Q4: Award announcements</li>
+          <li>Q4 2025: Application opens (November 10, 2025)</li>
+          <li>Q4 2025: Application deadline (December 12, 2025)</li>
+          <li>Q1 2026: Award announcements (February 2026)</li>
         </ul>
       </section>
       <section>
