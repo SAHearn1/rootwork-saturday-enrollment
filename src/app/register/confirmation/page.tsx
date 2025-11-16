@@ -6,7 +6,7 @@
 import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { CheckCircle, Calendar, Clock, MapPin, User, DollarSign, Download, Mail, AlertTriangle, ExternalLink, CreditCard, CheckSquare } from 'lucide-react'
+import { CheckCircle, Calendar, Clock, MapPin, User, DollarSign, Download, AlertTriangle, ExternalLink, CreditCard, CheckSquare } from 'lucide-react'
 
 function ConfirmationPageContent() {
   const searchParams = useSearchParams()
@@ -525,11 +525,13 @@ function ConfirmationPageContent() {
             Questions about your registration or Georgia Promise Scholarship?
           </p>
           <a
-            href="mailto:hearn.sa@gmail.com"
+            href="https://www.google.com/support/accounts/bin/answer.py?answer=181692"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-evergreen font-semibold hover:underline"
           >
-            <Mail className="w-5 h-5" />
-            hearn.sa@gmail.com
+            <ExternalLink className="w-5 h-5" />
+            Visit Support Page
           </a>
         </div>
 
