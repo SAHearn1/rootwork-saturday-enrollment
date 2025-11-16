@@ -1,4 +1,4 @@
-import { Download, ExternalLink, Calendar, FileText, CheckCircle, AlertCircle, Phone, Mail, Clock } from 'lucide-react';
+import { Download, ExternalLink, Calendar, FileText, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
