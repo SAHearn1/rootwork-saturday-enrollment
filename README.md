@@ -1,5 +1,18 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## RootWork Framework Saturday Enrollment
+
+Registration portal for the RootWork Framework Saturday Enrichment Program.
+
+## Logo Configuration
+
+The application logo needs to be embedded as base64 to ensure it persists across deployments. See [LOGO_SETUP.md](./LOGO_SETUP.md) for detailed instructions on how to add your logo.
+
+**Quick summary:**
+1. Convert your logo to base64: `base64 -w 0 your-logo.png > logo_base64.txt`
+2. Update `/src/config/logo.ts` with the base64 string
+3. The logo will automatically display in the registration header
+
 ## Getting Started
 
 First, run the development server:
