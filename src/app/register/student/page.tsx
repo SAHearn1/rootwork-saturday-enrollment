@@ -14,6 +14,7 @@ import {
   promiseScholarshipInfo,
   type PromiseScholarshipEligibility 
 } from '@/lib/promise-scholarship'
+import { RootWorkLogo } from '@/components/RootWorkLogo'
 
 interface StudentFormData {
   // Section 1: Basic Student Information
@@ -207,8 +208,8 @@ export default function StudentPage() {
         {/* Header */}
         <div className="bg-gradient-to-br from-evergreen-dark to-evergreen p-6 md:p-8 rounded-2xl shadow-xl mb-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-gold-leaf to-gold-leaf-dark rounded-full flex items-center justify-center text-3xl shadow-lg">
-              🌱
+            <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg overflow-hidden bg-white">
+              <RootWorkLogo width={56} height={56} />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-canvas-light">Student Registration</h1>

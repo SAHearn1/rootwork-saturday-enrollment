@@ -1,0 +1,83 @@
+# RootWork Framework Logo - Base64 Encoding
+
+## Overview
+This file contains the complete base64-encoded logo data URL for the RootWork Framework.
+The logo is embedded directly in the application to eliminate HTTP requests and ensure instant loading.
+
+## Current Implementation
+The logo is stored in: `src/constants/logo.ts`
+A reusable component is available at: `src/components/RootWorkLogo.tsx`
+
+## Base64 Data URL Format
+The logo uses the data URL scheme with the following format:
+```
+data:image/png;base64,[BASE64_ENCODED_IMAGE_DATA]
+```
+
+## Current Logo Data
+**TODO**: The current logo is a placeholder. Replace with actual RootWork Framework logo.
+
+The logo should be a PNG image with dimensions of approximately 1024x1024 pixels for best quality.
+
+## How to Update the Logo
+
+### Option 1: Using an existing PNG file
+1. Locate the RootWork Framework logo PNG file
+2. Convert to base64 using one of these methods:
+   - Online tool: https://www.base64-image.de/
+   - Command line (Linux/Mac): `base64 -w 0 logo.png`
+   - Command line (Windows): `certutil -encode logo.png logo.txt` then remove headers
+3. Copy the base64 string
+4. Open `src/constants/logo.ts`
+5. Replace the value of `ROOTWORK_LOGO_BASE64` with:
+   ```typescript
+   export const ROOTWORK_LOGO_BASE64 = "data:image/png;base64,[YOUR_BASE64_STRING]";
+   ```
+
+### Option 2: Direct paste from problem statement
+If you have the complete base64 string from the problem statement:
+1. Open `src/constants/logo.ts`
+2. Replace the entire ROOTWORK_LOGO_BASE64 constant value with the provided string
+3. Ensure the string starts with `data:image/png;base64,`
+4. Save the file
+
+## Usage in Components
+The logo can be used anywhere in the application by importing the component:
+
+```typescript
+import { RootWorkLogo } from '@/components/RootWorkLogo';
+
+// Use with default size (80x80)
+<RootWorkLogo />
+
+// Use with custom size
+<RootWorkLogo width={64} height={64} />
+
+// Use with custom styling
+<RootWorkLogo width={56} height={56} className="rounded-full" />
+```
+
+## Pages Using the Logo
+The logo has been integrated into the following pages:
+1. `/register` - Main registration page (64x64px)
+2. `/register/student` - Student registration page (56x56px)
+3. `/register/payment` - Payment page (if applicable)
+4. `/register/confirmation` - Confirmation page (if applicable)
+
+## Benefits of Base64 Encoding
+- ✅ No HTTP request needed - instant display
+- ✅ No external file dependencies
+- ✅ Works offline
+- ✅ Simplified deployment
+- ✅ Guaranteed availability
+
+## Maintenance Notes
+- The base64 string should not be edited manually except during logo updates
+- Always test the display after updating to ensure the image renders correctly
+- Keep this file updated when making changes to the logo
+- The actual base64 string can be very long (typically 50KB-200KB for a quality PNG)
+
+## Contact
+For questions about the logo or to obtain the official RootWork Framework logo file, contact: hearn.sa@gmail.com
+
+Last Updated: November 16, 2024
