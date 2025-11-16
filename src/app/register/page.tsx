@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { promiseScholarshipInfo } from '@/lib/promise-scholarship'
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
+import { getLogoDataUri, LOGO_FALLBACK_EMOJI } from '@/config/logo'
 
 interface Session {
   id: string
@@ -77,8 +78,16 @@ export default function RegisterPage() {
         {/* Header */}
         <div className="bg-gradient-to-br from-evergreen-dark to-evergreen p-10 rounded-2xl shadow-xl mb-8">
           <div className="flex items-center gap-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-gold-leaf to-gold-dark rounded-full flex items-center justify-center text-4xl shadow-lg">
-              🌱
+            <div className="w-20 h-20 bg-gradient-to-br from-gold-leaf to-gold-dark rounded-full flex items-center justify-center text-4xl shadow-lg overflow-hidden">
+              {getLogoDataUri() ? (
+                <img 
+                  src={getLogoDataUri()!} 
+                  alt="RootWork Framework Logo" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                LOGO_FALLBACK_EMOJI
+              )}
             </div>
             <div>
               <h1 className="text-4xl font-bold text-canvas-light mb-2">RootWork Framework</h1>
