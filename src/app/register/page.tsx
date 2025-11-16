@@ -14,10 +14,9 @@ interface Session {
   availableSpots: number
 }
 
-type GradeLevel = 'K2' | 'G35' | 'G68' | 'G912'
+type GradeLevel = 'G35' | 'G68' | 'G912'
 
 const gradeLabels: Record<GradeLevel, string> = { 
-  K2: 'K-2', 
   G35: '3-5', 
   G68: '6-8', 
   G912: '9-12' 
@@ -232,7 +231,7 @@ export default function RegisterPage() {
               <p className="text-gold-leaf text-sm">{new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
             </div>
 
-            {(['K2', 'G35', 'G68', 'G912'] as GradeLevel[]).map((gradeLevel) => {
+            {(['G35', 'G68', 'G912'] as GradeLevel[]).map((gradeLevel) => {
               const gradeSessions = selectedDateSessions.filter(s => s.gradeLevel === gradeLevel)
               if (gradeSessions.length === 0) return null
 

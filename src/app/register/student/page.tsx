@@ -365,9 +365,6 @@ export default function StudentPage() {
                     required
                   >
                     <option value="">Select grade...</option>
-                    <option value="K">Kindergarten</option>
-                    <option value="1">1st Grade</option>
-                    <option value="2">2nd Grade</option>
                     <option value="3">3rd Grade</option>
                     <option value="4">4th Grade</option>
                     <option value="5">5th Grade</option>
