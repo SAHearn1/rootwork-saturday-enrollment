@@ -13,7 +13,7 @@ export function formatCurrency(cents: number): string {
 }
 
 export function formatDate(date: Date): string {
-  return new Intl.DateFormat('en-US', {
+  return new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
