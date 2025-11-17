@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import React from 'react'
 import {
   ROOTWORK_LOGO_ALT,
@@ -30,7 +29,7 @@ export const RootWorkLogo: React.FC<RootWorkLogoProps> = ({
   }
 
   return (
-    <Image
+    <img
       src={ROOTWORK_LOGO_SRC}
       alt={ROOTWORK_LOGO_ALT}
       width={width}
