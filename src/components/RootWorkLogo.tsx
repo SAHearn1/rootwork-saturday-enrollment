@@ -1,5 +1,4 @@
-import Image from 'next/image'
-import type { FC } from 'react'
+import React from 'react'
 import {
   ROOTWORK_LOGO_ALT,
   ROOTWORK_LOGO_FALLBACK,
@@ -12,7 +11,7 @@ interface RootWorkLogoProps {
   className?: string
 }
 
-export const RootWorkLogo: FC<RootWorkLogoProps> = ({
+export const RootWorkLogo: React.FC<RootWorkLogoProps> = ({
   width = 80,
   height = 80,
   className = '',
@@ -22,7 +21,6 @@ export const RootWorkLogo: FC<RootWorkLogoProps> = ({
       <div
         className={`flex items-center justify-center text-3xl ${className}`}
         style={{ width, height }}
-        role="img"
         aria-label={ROOTWORK_LOGO_ALT}
       >
         {ROOTWORK_LOGO_FALLBACK}
@@ -31,12 +29,13 @@ export const RootWorkLogo: FC<RootWorkLogoProps> = ({
   }
 
   return (
-    <Image
+    <img
       src={ROOTWORK_LOGO_SRC}
       alt={ROOTWORK_LOGO_ALT}
       width={width}
       height={height}
       className={className}
+      priority
     />
   )
 }
