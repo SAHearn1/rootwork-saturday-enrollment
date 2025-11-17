@@ -4,29 +4,38 @@
  * This file contains the base64-encoded logo image to ensure it persists
  * across deployments without requiring external file references.
  * 
- * To update the logo:
- * 1. Convert your logo image to base64:
- *    base64 -w 0 your-logo.png > logo_base64.txt
- * 2. Copy the entire contents of logo_base64.txt
- * 3. Paste it as the value of LOGO_BASE64_DATA below (between the quotes)
- * 4. Update the LOGO_MIME_TYPE if using a different image format
- * 
- * Example of what it should look like when configured:
- * export const LOGO_BASE64_DATA: string = 'iVBORw0KGgoAAAANSUhEUgAA...(thousands more characters)...CYII='
+ * INSTRUCTIONS:
+ * 1. In your GitHub repo (FG2GLandingpage), view the raw HTML
+ * 2. Find the line: src="data:image/webp;base64,UklGRqysAQBXRUJQVlA4...
+ * 3. Copy from UklGRqysAQBXRUJQVlA4... to the closing quote "
+ * 4. Paste it below where it says PASTE_BASE64_HERE
  */
 
+// ═══════════════════════════════════════════════════════════════════════
+// PASTE YOUR BASE64 STRING HERE
+// ═══════════════════════════════════════════════════════════════════════
+// 
+// Your string should START with: UklGRqysAQBXRUJQVlA4WAoAAAAgAAAA...
+// 
+// DO NOT include: data:image/webp;base64,
+// ONLY paste the base64 data that comes AFTER the comma
+//
 export const LOGO_BASE64_DATA: string =
-  'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmJnIHsgZmlsbDogIzBiM2IyZTsgfQogICAgICAuZmcgeyBmaWxsOiBub25lOyBzdHJva2U6ICNjNDllM2Y7IHN0cm9rZS13aWR0aDogMTA7IHN0cm9rZS1saW5lY2FwOiByb3VuZDsgc3Ryb2tlLWxpbmVqb2luOiByb3VuZDsgfQogICAgICAuZmcgLWZpbGwgeyBmaWxsOiAjYzQ5ZTNmOyB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8Y2lyY2xlIGNsYXNzPSJiZyIgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjUyIi8+CiAgPGcgc3Ryb2tlPSIjYzQ5ZTNmIiBzdHJva2Utd2lkdGg9IjEyIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgogICAgPGxpbmUgeDE9IjI1NiIgeTE9IjIyMCIgeDI9IjI1NiIgeTI9IjM2MCIgLz4KICAgIDxwYXRoIGQ9Ik0yNTYgMjIwIGMtMzIgLTMwIC00MCAtNzAgLTEwIC0xMTAiIC8+CiAgICA8cGF0aCBkPSJNMjU2IDIyMCBjMzIgLTMwIDQwIC03MCAxMCAtMTEwIiAvPgogICAgPHBhdGggZD0iTTI1NiAyNjAgYy00MCAxOCAtNzIgMTQgLTk2IC0xNCIgLz4KICAgIDxwYXRoIGQ9Ik0yNTYgMjYwIGM0MCAxOCA3MiAxNCA5NiAtMTQiIC8+CiAgICA8cGF0aCBkPSJNMjU2IDMwMCBjLTUwIDI0IC04OCAyMCAtMTIwIC0xNiIgLz4KICAgIDxwYXRoIGQ9Ik0yNTYgMzAwIGM1MCAyNCA4OCAyMCAxMjAgLTE2IiAvPgogICAgPHBhdGggZD0iTTI1NiAzNDAgYy02MCAyNiAtMTEwIDIyIC0xNTIgLTIwIiAvPgogICAgPHBhdGggZD0iTTI1NiAzNDAgYzYwIDI2IDExMCAyMiAxNTIgLTIwIiAvPgogICAgPHBhdGggZD0iTTI1NiAxODggbC0xOCAtMTIiIC8+CiAgICA8cGF0aCBkPSJNMjU2IDE4OCBsMTggLTEyIiAvPgogIDwvZz4KICA8ZyBzdHJva2U9IiNjNDllM2YiIHN0cm9rZS13aWR0aD0iMTIiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTkwLC0yMCkiPgogICAgPGxpbmUgeDE9IjIwMCIgeTE9IjE0MCIgeDI9IjMyMCIgeTI9IjE0MCIgLz4KICAgIDxsaW5lIHgxPSIyNjAiIHkxPSI5MCIgeDI9IjI2MCIgeTI9IjIyMCIgLz4KICAgIDxwYXRoIGQ9Ik0yMDAgMTgwIHEtMzIgMTQgLTMyIDQ0IHEzNiAxMiA2NCAwIHEwIC0zMCAtMzIgLTQ0eiIgLz4KICAgIDxwYXRoIGQ9Ik0zMjAgMTgwIHEtMzIgMTQgLTMyIDQ0IHEzNiAxMiA2NCAwIHEwIC0zMCAtMzIgLTQ0eiIgLz4KICA8L2c+CiAgPGcgc3Ryb2tlPSIjYzQ5ZTNmIiBzdHJva2Utd2lkdGg9IjEyIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDkwLC0yMCkiPgogICAgPHJlY3QgeD0iMTYwIiB5PSIxMjAiIHdpZHRoPSIxODAiIGhlaWdodD0iMTEwIiByeD0iMTQiIHJ5PSIxNCIgLz4KICAgIDxsaW5lIHgxPSIyNTAiIHkxPSIxMjAiIHgyPSIyNTAiIHkyPSIyMzAiIC8+CiAgICA8bGluZSB4MT0iMTgwIiB5MT0iMTUwIiB4Mj0iMjM1IiB5Mj0iMTUwIiAvPgogICAgPGxpbmUgeDE9IjI2NSIgeTE9IjE1MCIgeDI9IjMyMCIgeTI9IjE1MCIgLz4KICAgIDxsaW5lIHgxPSIxODAiIHkxPSIxNzgiIHgyPSIyMzUiIHkyPSIxNzgiIC8+CiAgICA8bGluZSB4MT0iMjY1IiB5MT0iMTc4IiB4Mj0iMzIwIiB5Mj0iMTc4IiAvPgogIDwvZz4KICA8ZyBzdHJva2U9IiNjNDllM2YiIHN0cm9rZS13aWR0aD0iMTIiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTkwLDEyMCkiPgogICAgPGVsbGlwc2UgY3g9IjI2MCIgY3k9IjI0MCIgcng9IjcwIiByeT0iODYiIC8+CiAgICA8bGluZSB4MT0iMjYwIiB5MT0iMTU0IiB4Mj0iMjYwIiB5Mj0iMzI2IiAvPgogICAgPHBhdGggZD0iTTI2MCAzMjYgcS0yNiAtMjAgLTI2IC02MCBxMCAtNDAgMjYgLTYwIiAvPgogICAgPHBhdGggZD0iTTI2MCAzMjYgcTI2IC0yMCAyNiAtNjAgcTAgLTQwIC0yNiAtNjAiIC8+CiAgPC9nPgogIDxnIHN0cm9rZT0iI2M0OWUzZiIgc3Ryb2tlLXdpZHRoPSIxMiIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMTAsMTIwKSI+CiAgICA8bGluZSB4MT0iMjMwIiB5MT0iMTQwIiB4Mj0iMjMwIiB5Mj0iMjIwIiAvPgogICAgPHBhdGggZD0iTTE4MCAyMjAgcTAgNzAgMTAwIDcwIHEzNiAwIDM2IC0yNiBxMCAtMTQgLTE4IC0yNiBxLTMwIC0yMiAtMzAgLTcwIiAvPgogICAgPHBhdGggZD0iTTIwMCAxNDAgaDYwIiAvPgogIDwvZz4KICA8ZyBzdHJva2U9IiNjNDllM2YiIHN0cm9rZS13aWR0aD04IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgogICAgPHBhdGggZD0iTTEyMCAzODAgcTMwIDQwIDc2IDEwIiAvPgogICAgPHBhdGggZD0iTTE0MCA0MTAgcTIwIDMyIDY0IDEyIiAvPgogICAgPHBhdGggZD0iTTM1MiA0MDAgcTQwIDMyIDc2IC0xMCIgLz4KICAgIDxwYXRoIGQ9Ik0zMzIgNDMwIHEzNCAzMiA3MiAtNCIgLz4KICA8L2c+CiAgPGcgc3Ryb2tlPSIjYzQ5ZTNmIiBzdHJva2Utd2lkdGg9IjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+CiAgICA8bGluZSB4MT0iMjU2IiB5MT0iMTAyIiB4Mj0iMjU2IiB5Mj0iODAiIC8+CiAgICA8bGluZSB4MT0iMjMyIiB5MT0iMTEwIiB4Mj0iMjE4IiB5Mj0iOTIiIC8+CiAgICA8bGluZSB4MT0iMjgwIiB5MT0iMTEwIiB4Mj0iMjk0IiB5Mj0iOTIiIC8+CiAgPC9nPgo8L3N2Zz4K'
+  'UklGRqysAQBXRUJQVlA4WAoAAAAgAAAA/wMA/wMASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AAB'
 
-// MIME type for the logo image (SVG encoded as base64)
-export const LOGO_MIME_TYPE = 'image/svg+xml'
+// MIME type for the logo image (WEBP encoded as base64)
+export const LOGO_MIME_TYPE = 'image/webp'
 
 /**
  * Returns the complete data URI for the logo
  * If no logo data is configured, returns null
  */
 export function getLogoDataUri(): string | null {
-  if (!LOGO_BASE64_DATA || LOGO_BASE64_DATA.trim() === '') {
+  if (
+    !LOGO_BASE64_DATA ||
+    LOGO_BASE64_DATA.trim() === '' ||
+    LOGO_BASE64_DATA === 'PASTE_BASE64_HERE'
+  ) {
     return null
   }
   return `data:${LOGO_MIME_TYPE};base64,${LOGO_BASE64_DATA}`
