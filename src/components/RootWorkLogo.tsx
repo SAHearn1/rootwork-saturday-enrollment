@@ -35,6 +35,7 @@ export const RootWorkLogo: React.FC<RootWorkLogoProps> = ({
       width={width}
       height={height}
       className={className}
+      priority
     />
   )
 }
