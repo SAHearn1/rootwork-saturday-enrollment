@@ -16,7 +16,9 @@ import { LOGO_FALLBACK_EMOJI } from '@/config/logo'
 // Precomputed base64 data for the RootWork Framework logo. This constant assembles
 // the base64 string from smaller segments to avoid extremely long literal lines.
 const _LOGO_DATA_URI_OLD: string = (() => {
-  const segments = [
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _segments = [
     'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAg',
     'LmJnIHsgZmlsbDogIzBiM2IyZTsgfQogICAgICAuZmcgeyBmaWxsOiBub25lOyBzdHJva2U6ICNjNDllM2Y7IHN0cm9rZS13aWR0aDogMTA7IHN0cm9rZS1s',
     'aW5lY2FwOiByb3VuZDsgc3Ryb2tlLWxpbmVqb2luOiByb3VuZDsgfQogICAgICAuZmcgLWZpbGwgeyBmaWxsOiAjYzQ5ZTNmOyB9CiAgICA8L3N0eWxlPgog',
@@ -54,8 +56,9 @@ const _LOGO_DATA_URI_OLD: string = (() => {
   
 
 
-    return segments.join('');
-
+    return _segments.join('');
+})(); 
+      .join(''})();
 )();
 const LOGO_DATA_URI: string = '/logo.webp';
  
