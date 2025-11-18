@@ -184,7 +184,7 @@ export default function RegisterPage() {
           <ul className="space-y-2 text-evergreen-dark">
             <li className="flex items-start gap-2">
               <span className="text-gold-leaf font-bold">→</span>
-              Choose your preferred Saturday from the available dates below
+              Choose your preferred date from the available options below (weekdays or Saturdays)
             </li>
             <li className="flex items-start gap-2">
               <span className="text-gold-leaf font-bold">→</span>
@@ -201,7 +201,7 @@ export default function RegisterPage() {
           {/* Date Selection */}
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <h2 className="text-2xl font-bold text-evergreen mb-4 pb-4 border-b-2 border-gold-leaf">
-              Select a Saturday
+              Select a Date
             </h2>
             <div className="space-y-3">
               {uniqueDates.map((date) => (
