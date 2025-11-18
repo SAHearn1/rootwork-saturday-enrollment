@@ -5,6 +5,11 @@
  * Falls back to an emoji if no logo data is configured.
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+
+
+
 /* eslint-disable @next/next/no-img-element */
 
 import { LOGO_FALLBACK_EMOJI } from '@/config/logo'
@@ -50,7 +55,8 @@ const _LOGO_DATA_URI_OLD: string = (() => {
 
 
 
-})();
+
+)();
 const LOGO_DATA_URI: string = '/logo.webp';
  
 
