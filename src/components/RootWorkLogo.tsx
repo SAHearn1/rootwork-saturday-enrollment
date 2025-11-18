@@ -5,6 +5,8 @@
  * Falls back to an emoji if no logo data is configured.
  */
 
+/* eslint-disable @next/next/no-img-element */
+
 import { LOGO_FALLBACK_EMOJI } from '@/config/logo'
 // Precomputed base64 data for the RootWork Framework logo. This constant assembles
 // the base64 string from smaller segments to avoid extremely long literal lines.
@@ -87,6 +89,7 @@ if (!logoDataUri) {
   // Render the logo image
   return (
     <img
+          // eslint-disable-next-line @next/next/no-img-element
       src={logoDataUri}
       alt="RootWork Framework - Emblem of Knowledge and Balance"
       width={width}
