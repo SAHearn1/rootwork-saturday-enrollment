@@ -70,20 +70,19 @@ export function RootWorkLogo({
 
 
   // If no logo is configured, show fallback emoji
-  if (!logoDataUri) {
-    (
- return (
+if (!logoDataUri) {
+    return (
+        <div
+            className={`flex items-center justify-center ${className}`}
+            style={{ width, height }}
+        >
+            <span style={{ fontSize: width * 0.5 }}>
+                {LOGO_FALLBACK_EMOJI}
+            </span>
+        </div>
+    );
+}
 
-      <div 
-        className={`flex items-center justify-center ${className}`}
-        style={{ width, height }}
-      >
-        <span style={{ fontSize: width * 0.5 }}>
-          {LOGO_FALLBACK_EMOJI}
-        </span>
-      </div>
-    )
-  };
 
   // Render the logo image
   return (
