@@ -14,7 +14,7 @@ model Session {
   startTime     String
   endTime       String
   gradeLevel    GradeLevel
-  capacity      Int          @default(30)
+  capacity      Int          @default(25)
   location      String       @default("WW Law Center")
   
   enrollments   Enrollment[]
