@@ -54,7 +54,7 @@ const _LOGO_DATA_URI_OLD: string = (() => {
   
 
 
-
+    return segments.join('');
 
 )();
 const LOGO_DATA_URI: string = '/logo.webp';
