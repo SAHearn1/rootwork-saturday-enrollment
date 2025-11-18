@@ -58,10 +58,9 @@ const _LOGO_DATA_URI_OLD: string = (() => {
 
     return _segments.join('');
 })(); 
-      .join(''})();
-)();
+
 const LOGO_DATA_URI: string = '/logo.webp';
- 
+
 
 
 interface RootWorkLogoProps {
