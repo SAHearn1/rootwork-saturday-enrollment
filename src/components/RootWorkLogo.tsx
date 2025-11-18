@@ -8,7 +8,7 @@
 import { LOGO_FALLBACK_EMOJI } from '@/config/logo'
 // Precomputed base64 data for the RootWork Framework logo. This constant assembles
 // the base64 string from smaller segments to avoid extremely long literal lines.
-const LOGO_DATA_URI: string = (() => {
+const _LOGO_DATA_URI_OLD: string = (() => {
   const segments = [
     'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAg',
     'LmJnIHsgZmlsbDogIzBiM2IyZTsgfQogICAgICAuZmcgeyBmaWxsOiBub25lOyBzdHJva2U6ICNjNDllM2Y7IHN0cm9rZS13aWR0aDogMTA7IHN0cm9rZS1s',
@@ -44,8 +44,14 @@ const LOGO_DATA_URI: string = (() => {
     'IC8+CiAgICA8bGluZSB4MT0iMjMyIiB5MT0iMTEwIiB4Mj0iMjE4IiB5Mj0iOTIiIC8+CiAgICA8bGluZSB4MT0iMjgwIiB5MT0iMTEwIiB4Mj0iMjk0IiB5',
     'Mj0iOTIiIC8+CiAgPC9nPgo8L3N2Zz4K',
   ];
-  return 'data:image/svg+xml;base64,' + segments.join('');
+  
+
+
+
 })();
+const LOGO_DATA_URI: string = '/logo.webp';
+ 
+
 
 interface RootWorkLogoProps {
   width?: number
@@ -59,10 +65,13 @@ export function RootWorkLogo({
   className = ''
 }: RootWorkLogoProps) {
   // Use the embedded base64 logo data URI defined above.
-  const logoDataUri = '/logo.webp'
+  const logoDataUri = LOGO_DATA_URI;
+
   // If no logo is configured, show fallback emoji
   if (!logoDataUri) {
-    return (
+    (
+ return (
+
       <div 
         className={`flex items-center justify-center ${className}`}
         style={{ width, height }}
@@ -72,7 +81,7 @@ export function RootWorkLogo({
         </span>
       </div>
     )
-  }
+  };
 
   // Render the logo image
   return (
