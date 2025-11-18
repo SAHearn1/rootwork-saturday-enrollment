@@ -66,6 +66,8 @@ export function RootWorkLogo({
 }: RootWorkLogoProps) {
   // Use the embedded base64 logo data URI defined above.
   const logoDataUri = LOGO_DATA_URI;
+    void _LOGO_DATA_URI_OLD;
+
 
   // If no logo is configured, show fallback emoji
   if (!logoDataUri) {
