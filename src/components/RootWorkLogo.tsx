@@ -11,7 +11,7 @@ import { LOGO_FALLBACK_EMOJI } from '@/config/logo'
 // Precomputed base64 data for the RootWork Framework logo. This constant assembles
 // the base64 string from smaller segments to avoid extremely long literal lines.
 const _LOGO_DATA_URI_OLD: string = (() => {
-  const segments = [
+  const _segments = [
     'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAg',
     'LmJnIHsgZmlsbDogIzBiM2IyZTsgfQogICAgICAuZmcgeyBmaWxsOiBub25lOyBzdHJva2U6ICNjNDllM2Y7IHN0cm9rZS13aWR0aDogMTA7IHN0cm9rZS1s',
     'aW5lY2FwOiByb3VuZDsgc3Ryb2tlLWxpbmVqb2luOiByb3VuZDsgfQogICAgICAuZmcgLWZpbGwgeyBmaWxsOiAjYzQ5ZTNmOyB9CiAgICA8L3N0eWxlPgog',
@@ -46,11 +46,10 @@ const _LOGO_DATA_URI_OLD: string = (() => {
     'IC8+CiAgICA8bGluZSB4MT0iMjMyIiB5MT0iMTEwIiB4Mj0iMjE4IiB5Mj0iOTIiIC8+CiAgICA8bGluZSB4MT0iMjgwIiB5MT0iMTEwIiB4Mj0iMjk0IiB5',
     'Mj0iOTIiIC8+CiAgPC9nPgo8L3N2Zz4K',
   ];
-  
 
-
-
+  return _segments.join('');
 })();
+
 const LOGO_DATA_URI: string = '/logo.webp';
  
 
@@ -61,35 +60,33 @@ interface RootWorkLogoProps {
   className?: string
 }
 
-export function RootWorkLogo({ 
-  width = 80, 
+export function RootWorkLogo({
+  width = 80,
   height = 80,
   className = ''
 }: RootWorkLogoProps) {
   // Use the embedded base64 logo data URI defined above.
   const logoDataUri = LOGO_DATA_URI;
-    void _LOGO_DATA_URI_OLD;
-
+  void _LOGO_DATA_URI_OLD;
 
   // If no logo is configured, show fallback emoji
-if (!logoDataUri) {
+  if (!logoDataUri) {
     return (
-        <div
-            className={`flex items-center justify-center ${className}`}
-            style={{ width, height }}
-        >
-            <span style={{ fontSize: width * 0.5 }}>
-                {LOGO_FALLBACK_EMOJI}
-            </span>
-        </div>
+      <div
+        className={`flex items-center justify-center ${className}`}
+        style={{ width, height }}
+      >
+        <span style={{ fontSize: width * 0.5 }}>
+          {LOGO_FALLBACK_EMOJI}
+        </span>
+      </div>
     );
-}
-
+  }
 
   // Render the logo image
   return (
     <img
-          // eslint-disable-next-line @next/next/no-img-element
+      // eslint-disable-next-line @next/next/no-img-element
       src={logoDataUri}
       alt="RootWork Framework - Emblem of Knowledge and Balance"
       width={width}
