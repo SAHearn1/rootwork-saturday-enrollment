@@ -197,36 +197,41 @@ export default function RegisterPage() {
           </ul>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {/* Date Selection */}
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <h2 className="text-2xl font-bold text-evergreen mb-4 pb-4 border-b-2 border-gold-leaf">
               Select a Date
             </h2>
-            <div className="space-y-3">
-              {uniqueDates.map((date) => (
-                <button
-                  key={date}
-                  onClick={() => setSelectedDate(date)}
-                  className={`w-full p-4 rounded-xl border-2 transition-all ${
-                    selectedDate === date
-                      ? 'border-gold-leaf bg-canvas-cream shadow-md scale-105'
-                      : 'border-gray-200 hover:border-gold-leaf'
-                  }`}
-                >
-                  <div className="text-2xl font-bold text-evergreen">
-                    {new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {new Date(date).getFullYear()}
-                  </div>
-                </button>
-              ))}
+            <div className="relative">
+              <select
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full p-4 text-lg font-semibold text-evergreen bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-leaf focus:border-gold-leaf transition-all cursor-pointer hover:border-gold-leaf appearance-none"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23234F32'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 1rem center',
+                  backgroundSize: '1.5rem',
+                  paddingRight: '3rem'
+                }}
+              >
+                {uniqueDates.map((date) => (
+                  <option key={date} value={date}>
+                    {new Date(date).toLocaleDateString('en-US', { 
+                      weekday: 'long',
+                      month: 'long', 
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
           {/* Session List */}
-          <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
             <div className="bg-gradient-to-r from-evergreen to-evergreen-light text-canvas-light p-4 rounded-xl mb-6">
               <h3 className="text-xl font-bold">Available Sessions</h3>
               <p className="text-gold-leaf text-sm">{new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>

@@ -6,15 +6,22 @@ The application is configured to store enrollment data in the Vercel Postgres da
 
 ## Environment Configuration
 
-The database connection strings have been configured in the `.env` file (which is gitignored for security). When deploying to Vercel, you'll need to set these environment variables in your Vercel project settings.
+The database connection strings must be configured in a `.env` file (which is gitignored for security). A template is provided in `.env.example`. When deploying to Vercel, you'll need to set these environment variables in your Vercel project settings.
 
 ### Required Environment Variables
 
+**Important:** The database should be named **EnrollmentData** in your Vercel Postgres configuration.
+
 ```
-POSTGRES_URL="postgres://[credentials]@db.prisma.io:5432/postgres?sslmode=require"
-POSTGRES_URL_NON_POOLING="postgres://[credentials]@db.prisma.io:5432/postgres?sslmode=require"
+POSTGRES_URL="postgres://[username]:[password]@[host]:5432/EnrollmentData?sslmode=require"
+POSTGRES_URL_NON_POOLING="postgres://[username]:[password]@[host]:5432/EnrollmentData?sslmode=require"
 POSTGRES_PRISMA_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=[your-api-key]"
 ```
+
+To get started locally:
+1. Copy `.env.example` to `.env`
+2. Fill in your actual database credentials
+3. Ensure the database name is `EnrollmentData` in the connection URLs
 
 ## Database Schema
 
@@ -92,14 +99,30 @@ npm run db:seed
 
 ## Vercel Deployment
 
-When deploying to Vercel:
+When deploying to Vercel, follow these steps to ensure the database variables are properly configured:
 
-1. Go to your project settings in Vercel
-2. Navigate to Environment Variables
-3. Add the three database connection strings:
-   - `POSTGRES_URL`
-   - `POSTGRES_URL_NON_POOLING`
-   - `POSTGRES_PRISMA_URL`
-4. Deploy the application
+1. **Create the Postgres Database in Vercel:**
+   - Go to your Vercel project dashboard
+   - Navigate to the "Storage" tab
+   - Create a new Postgres database
+   - Name it **EnrollmentData** for consistency with the schema
 
-The database will automatically be used to store all enrollment data.
+2. **Configure Environment Variables:**
+   - Go to your project settings in Vercel
+   - Navigate to "Environment Variables" section
+   - Add the three required database connection strings:
+     - `POSTGRES_URL`
+     - `POSTGRES_URL_NON_POOLING`
+     - `POSTGRES_PRISMA_URL`
+   - Vercel will auto-populate these when you connect the Postgres database to your project
+
+3. **Deploy the Application:**
+   - Push your code to GitHub
+   - Vercel will automatically build and deploy
+   - The database schema will be applied during the build process via `prisma generate`
+
+4. **Initialize the Database:**
+   - After deployment, run `npm run db:push` locally (with production credentials) or use Vercel CLI
+   - Optionally seed the database with `npm run db:seed`
+
+The application will now safely store all enrollment data in the Vercel Postgres database named **EnrollmentData**.
