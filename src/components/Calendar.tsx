@@ -88,7 +88,7 @@ export function Calendar({ availableDates, selectedDate, onDateSelect, sessionsB
     
     if (totalSpots === 0) {
       return { color: 'bg-red-500', text: 'Full' }
-    } else if (totalSpots < 10) {
+    } else if (totalSpots < 5) {
       return { color: 'bg-orange-500', text: 'Limited' }
     } else {
       return { color: 'bg-green-500', text: 'Open' }
