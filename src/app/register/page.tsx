@@ -247,7 +247,6 @@ export default function RegisterPage() {
                     {gradeSessions.map((session: Session) => {
                       const isFull = session.availableSpots === 0
                       const isLimited = session.availableSpots > 0 && session.availableSpots < 5
-                      const isOpen = session.availableSpots >= 5
                       
                       return (
                         <button

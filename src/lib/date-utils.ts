@@ -121,7 +121,7 @@ export function getAvailableDatesFromSessions(sessions: Session[]): string[] {
   
   // Return dates that have at least one available spot
   return Array.from(dateMap.entries())
-    .filter(([_, spots]) => spots > 0)
+    .filter(([, spots]) => spots > 0)
     .map(([date]) => date)
 }
 
