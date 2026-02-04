@@ -15,6 +15,78 @@ The application logo needs to be embedded as base64 to ensure it persists across
 
 ## Getting Started
 
+### Prerequisites
+
+1. **Node.js** 18.x or higher
+2. **PostgreSQL** database (Vercel Postgres recommended)
+3. **Stripe account** for payment processing (https://stripe.com)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd rootwork-saturday-enrollment
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   
+   Copy `.env.example` to `.env.local` and fill in your values:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Required variables:
+   ```bash
+   # Database (Vercel Postgres)
+   POSTGRES_URL="postgres://..."
+   POSTGRES_URL_NON_POOLING="postgres://..."
+   POSTGRES_PRISMA_URL="prisma+postgres://..."
+
+   # Stripe (get from https://dashboard.stripe.com/test/apikeys)
+   STRIPE_SECRET_KEY="sk_test_..."
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+   
+   # Optional: For webhook handling in production
+   STRIPE_WEBHOOK_SECRET="whsec_..."
+   ```
+
+4. **Set up the database**
+   ```bash
+   # Push schema to database
+   npm run db:push
+   
+   # Seed with sample sessions (optional)
+   npm run db:seed
+   ```
+
+5. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) to view the application.
+
+### Stripe Setup
+
+1. **Sign up for Stripe** at https://stripe.com
+2. **Get your API keys**:
+   - Go to Developers > API keys in Stripe Dashboard
+   - Copy your Publishable key (pk_test_...) and Secret key (sk_test_...)
+   - Add them to your `.env.local` file
+3. **Test payments** using Stripe test cards:
+   - Success: `4242 4242 4242 4242`
+   - Decline: `4000 0000 0000 0002`
+
+See [STRIPE_INTEGRATION.md](./STRIPE_INTEGRATION.md) for detailed payment integration documentation.
+
+## Getting Started
+
 First, run the development server:
 
 ```bash
