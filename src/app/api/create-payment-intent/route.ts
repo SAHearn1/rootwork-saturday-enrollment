@@ -5,8 +5,8 @@ export async function POST(req: NextRequest) {
   try {
     const { amount, currency = 'usd', metadata } = await req.json()
     
-    // Validate amount
-    if (!amount || amount < 0.5) { // Minimum $0.50
+    // Validate amount (Stripe requires minimum $0.50 charge)
+    if (!amount || amount < 0.5) { // Minimum $0.50 per Stripe requirements
       return NextResponse.json(
         { error: 'Invalid amount' },
         { status: 400 }

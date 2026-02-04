@@ -193,10 +193,7 @@ function PaymentPageContent() {
           throw new Error('Failed to save enrollment')
         }
         
-        const { enrollmentId: gpsEnrollmentId } = await enrollmentResponse.json()
-        
-        // Log successful enrollment (enrollmentId used for potential future use)
-        console.log('GPS enrollment created:', gpsEnrollmentId)
+        await enrollmentResponse.json()
         
         // Navigate to confirmation
         const confirmationParams = new URLSearchParams({
@@ -281,10 +278,7 @@ function PaymentPageContent() {
         throw new Error('Failed to save enrollment')
       }
 
-      const { enrollmentId: paidEnrollmentId } = await enrollmentResponse.json()
-      
-      // Log successful enrollment (enrollmentId used for potential future use)
-      console.log('Paid enrollment created:', paidEnrollmentId)
+      await enrollmentResponse.json()
       
       // Prepare confirmation data
       const confirmationParams = new URLSearchParams({
