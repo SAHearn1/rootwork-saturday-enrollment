@@ -32,14 +32,16 @@ export interface SessionDetails {
   date: string
   time: string
   location: string
-  gradeLevel: string
+  gradeLevel: string | null
+  programType: string
 }
 
 export interface StudentDetails {
   firstName: string
   lastName: string
-  gradeLevel: string
-  currentSchool: string
+  gradeLevel?: string
+  currentSchool?: string
+  programType: string
 }
 
 export type PaymentType = 'full' | 'deposit' | 'gps'
