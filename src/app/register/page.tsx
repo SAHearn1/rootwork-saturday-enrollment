@@ -166,9 +166,14 @@ export default function RegisterPage() {
                     Apply Now
                     <ExternalLink className="w-4 h-4" />
                   </a>
-                  <span className="text-evergreen-dark font-semibold">
-                    Application Deadline: {promiseScholarshipInfo.applicationDeadline}
-                  </span>
+                  <div className="text-evergreen-dark font-semibold">
+                    <div className="mb-2">2026 Application Windows:</div>
+                    <div className="text-sm space-y-1">
+                      {promiseScholarshipInfo.applicationPeriods.map((period, i) => (
+                        <div key={i}>• {period.start} - {period.end}</div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

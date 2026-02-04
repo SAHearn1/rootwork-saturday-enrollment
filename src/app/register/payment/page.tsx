@@ -260,7 +260,7 @@ export default function PaymentPage() {
                           ⚠️ Important: You must still apply for the scholarship
                         </p>
                         <p className="text-xs text-green-700">
-                          Application deadline: {promiseScholarshipInfo.applicationDeadline}. 
+                          Application windows: March, May, August, or November 2026. 
                           After registration, you&apos;ll receive detailed instructions.
                         </p>
                       </div>
