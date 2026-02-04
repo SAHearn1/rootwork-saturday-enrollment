@@ -218,8 +218,9 @@ export default function StudentPage() {
       // Skip K12-only sections for Adult programs
       if (isAdult) {
         // Skip sections 2 (School) and 3 (Parent/Guardian)
-        if (nextSection === 2) nextSection = 4
-        else if (nextSection === 3) nextSection = 4
+        if (nextSection === 2 || nextSection === 3) {
+          nextSection = 4
+        }
         // Skip section 6 (Promise Scholarship)
         else if (nextSection === 6) {
           // Go directly to payment since section 5 is the last for adults
@@ -237,10 +238,8 @@ export default function StudentPage() {
     let prevSection = currentSection - 1
     
     // Skip K12-only sections for Adult programs when going back
-    if (isAdult) {
-      // Skip sections 2 and 3
-      if (prevSection === 3) prevSection = 1
-      else if (prevSection === 2) prevSection = 1
+    if (isAdult && (prevSection === 2 || prevSection === 3)) {
+      prevSection = 1
     }
     
     setCurrentSection(Math.max(prevSection, 1))
@@ -248,6 +247,13 @@ export default function StudentPage() {
 
   const handleContinueToPayment = () => {
     router.push('/register/payment')
+  }
+
+  // Calculate progress percentage for Adult programs
+  const getAdultProgressPercentage = (section: number): string => {
+    if (section === 1) return '33%'
+    if (section === 4) return '66%'
+    return '100%'
   }
 
   const isSchoolEligible = (schoolName: string) => {
@@ -348,7 +354,7 @@ export default function StudentPage() {
               style={{ 
                 width: formData.programType === 'K12' 
                   ? `${(currentSection / 6) * 100}%`
-                  : currentSection === 1 ? '33%' : currentSection === 4 ? '66%' : '100%'
+                  : getAdultProgressPercentage(currentSection)
               }}
             />
           </div>

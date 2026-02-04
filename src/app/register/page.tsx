@@ -46,8 +46,11 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(true)
   const [showScholarshipDetails, setShowScholarshipDetails] = useState(false)
 
+  // Fetch sessions once on mount - fetchSessions is intentionally not in the dependency array
+  // to prevent re-fetching when component re-renders. Program type filtering happens in useMemo.
   useEffect(() => {
     fetchSessions()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function fetchSessions() {
