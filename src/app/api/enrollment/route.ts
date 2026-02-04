@@ -11,22 +11,30 @@ export async function POST(req: NextRequest) {
       paymentStatus
     } = await req.json()
     
-    // Create student record
+    // Create student record with conditional fields
     const student = await prisma.student.create({
       data: {
         firstName: studentData.firstName,
         lastName: studentData.lastName,
         dateOfBirth: new Date(studentData.dateOfBirth),
-        gradeLevel: studentData.gradeLevel,
-        parentName: studentData.parentName,
-        parentEmail: studentData.parentEmail,
-        parentPhone: studentData.parentPhone,
+        // K-12 specific fields (optional for adults)
+        gradeLevel: studentData.gradeLevel || null,
+        currentSchool: studentData.currentSchool || null,
+        parentName: studentData.parentName || null,
+        parentEmail: studentData.parentEmail || null,
+        parentPhone: studentData.parentPhone || null,
+        promiseEligible: studentData.promiseEligible || null,
+        // Adult contact info (optional for K-12)
+        email: studentData.email || null,
+        phone: studentData.phone || null,
+        // Emergency contact (required for all)
         emergencyName: studentData.emergencyName,
         emergencyPhone: studentData.emergencyPhone,
         emergencyRelation: studentData.emergencyRelation,
-        allergies: studentData.allergies,
-        medications: studentData.medications,
-        specialNeeds: studentData.specialNeeds
+        // Medical info (optional for all)
+        allergies: studentData.allergies || null,
+        medications: studentData.medications || null,
+        specialNeeds: studentData.specialNeeds || null
       }
     })
     
