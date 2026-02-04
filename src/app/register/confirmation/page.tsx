@@ -154,15 +154,9 @@ function ConfirmationPageContent() {
                 <h3 className="text-3xl font-bold text-evergreen mb-2">
                   📋 Apply for Georgia Promise Scholarship
                 </h3>
-                <div className="text-lg font-semibold text-evergreen-dark">
-                  <p className="mb-2">2026 Application Windows:</p>
-                  <ul className="text-base space-y-1 list-disc pl-6">
-                    <li>March 1 - March 31, 2026</li>
-                    <li>May 1 - May 31, 2026</li>
-                    <li>August 1 - August 31, 2026</li>
-                    <li>November 1 - November 30, 2026</li>
-                  </ul>
-                </div>
+                <p className="text-lg font-semibold text-evergreen-dark">
+                  Follow these steps to complete your application
+                </p>
               </div>
             </div>
 
@@ -234,7 +228,7 @@ function ConfirmationPageContent() {
                       Open mygeorgiapromise.org
                     </a>
                     <p className="text-sm text-gray-600 mt-2">
-                      Portal opens during application windows (March, May, August, and November 2026)
+                      Visit the portal to check current application status and availability
                     </p>
                   </div>
                 </div>
@@ -452,11 +446,10 @@ function ConfirmationPageContent() {
                 ⚠️ Important Reminders
               </h5>
               <ul className="text-sm text-red-800 space-y-1 pl-6 list-disc">
-                <li><strong>Four application windows in 2026:</strong> March, May, August, and November</li>
-                <li>Apply during any open window when you have all required documents ready</li>
+                <li>Apply as soon as you have all required documents ready</li>
                 <li>Priority given to families with income ≤ 400% federal poverty level</li>
                 <li>Once approved, you&apos;re in the program until student graduates</li>
-                <li>Funds are distributed quarterly throughout the year</li>
+                <li>Funds are distributed quarterly</li>
                 <li>Your RootWork registration is confirmed regardless of scholarship approval</li>
               </ul>
             </div>

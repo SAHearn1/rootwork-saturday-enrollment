@@ -260,7 +260,7 @@ export default function PaymentPage() {
                           ⚠️ Important: You must still apply for the scholarship
                         </p>
                         <p className="text-xs text-green-700">
-                          Application windows: March, May, August, or November 2026. 
+                          Visit the Georgia Promise website to check current application periods and apply. 
                           After registration, you&apos;ll receive detailed instructions.
                         </p>
                       </div>

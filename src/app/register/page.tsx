@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { promiseScholarshipInfo } from '@/lib/promise-scholarship'
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
 import { RootWorkLogo } from '@/components/RootWorkLogo'
+import { Calendar } from '@/components/Calendar'
+import { getAvailableDatesFromSessions } from '@/lib/date-utils'
 
 interface Session {
   id: string
@@ -41,9 +43,10 @@ export default function RegisterPage() {
       const data: Session[] = await res.json()
       setSessions(data)
       
-      const dates = [...new Set(data.map((s) => s.date))]
-      if (dates.length > 0) {
-        setSelectedDate(dates[0] as string)
+      // Auto-select first available date with sessions
+      const availableDates = getAvailableDatesFromSessions(data)
+      if (availableDates.length > 0) {
+        setSelectedDate(availableDates[0] as string)
       }
     } catch (error) {
       console.error('Failed to fetch sessions:', error)
@@ -52,8 +55,20 @@ export default function RegisterPage() {
     }
   }
 
-  const uniqueDates = [...new Set(sessions.map(s => s.date))]
+  const availableDates = useMemo(() => getAvailableDatesFromSessions(sessions), [sessions])
   const selectedDateSessions = sessions.filter(s => s.date === selectedDate)
+  
+  // Group sessions by date for calendar
+  const sessionsByDate = useMemo(() => {
+    const grouped: Record<string, Session[]> = {}
+    sessions.forEach(session => {
+      if (!grouped[session.date]) {
+        grouped[session.date] = []
+      }
+      grouped[session.date].push(session)
+    })
+    return grouped
+  }, [sessions])
 
   const handleContinue = () => {
     if (selectedSession) {
@@ -166,14 +181,6 @@ export default function RegisterPage() {
                     Apply Now
                     <ExternalLink className="w-4 h-4" />
                   </a>
-                  <div className="text-evergreen-dark font-semibold">
-                    <div className="mb-2">2026 Application Windows:</div>
-                    <div className="text-sm space-y-1">
-                      {promiseScholarshipInfo.applicationPeriods.map((period, i) => (
-                        <div key={i}>• {period.start} - {period.end}</div>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               </div>
             )}
@@ -203,43 +210,24 @@ export default function RegisterPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-6">
-          {/* Date Selection */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-evergreen mb-4 pb-4 border-b-2 border-gold-leaf">
-              Select a Date
-            </h2>
-            <div className="relative">
-              <select
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full p-4 text-lg font-semibold text-evergreen bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-leaf focus:border-gold-leaf transition-all cursor-pointer hover:border-gold-leaf appearance-none"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23234F32'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 1rem center',
-                  backgroundSize: '1.5rem',
-                  paddingRight: '3rem'
-                }}
-              >
-                {uniqueDates.map((date) => (
-                  <option key={date} value={date}>
-                    {new Date(date).toLocaleDateString('en-US', { 
-                      weekday: 'long',
-                      month: 'long', 
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          {/* Calendar Date Selection */}
+          <Calendar
+            availableDates={availableDates}
+            selectedDate={selectedDate}
+            onDateSelect={setSelectedDate}
+            sessionsByDate={sessionsByDate}
+          />
 
           {/* Session List */}
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <div className="bg-gradient-to-r from-evergreen to-evergreen-light text-canvas-light p-4 rounded-xl mb-6">
               <h3 className="text-xl font-bold">Available Sessions</h3>
-              <p className="text-gold-leaf text-sm">{new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+              <p className="text-gold-leaf text-sm">
+                {selectedDate 
+                  ? new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+                  : 'Select a date to view available sessions'
+                }
+              </p>
             </div>
 
             {(['G35', 'G68', 'G912'] as GradeLevel[]).map((gradeLevel) => {
@@ -253,42 +241,59 @@ export default function RegisterPage() {
                     Grade {gradeLabels[gradeLevel]}
                   </h4>
                   <div className="space-y-2">
-                    {gradeSessions.map((session: Session) => (
-                      <button
-                        key={session.id}
-                        onClick={() => setSelectedSession(session.id)}
-                        disabled={session.availableSpots === 0}
-                        className={`w-full p-4 rounded-xl border-2 transition-all flex justify-between items-center ${
-                          selectedSession === session.id
-                            ? 'border-evergreen bg-green-50 shadow-md'
-                            : session.availableSpots === 0
-                            ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-50'
-                            : 'border-gray-200 hover:border-gold-leaf hover:shadow-md'
-                        }`}
-                      >
-                        <span className="font-semibold text-evergreen">
-                          {session.startTime} - {session.endTime}
-                        </span>
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm text-gray-600">
-                            {session.availableSpots} spots
+                    {gradeSessions.map((session: Session) => {
+                      const isFull = session.availableSpots === 0
+                      const isLimited = session.availableSpots > 0 && session.availableSpots < 5
+                      
+                      return (
+                        <button
+                          key={session.id}
+                          onClick={() => setSelectedSession(session.id)}
+                          disabled={isFull}
+                          className={`w-full p-4 rounded-xl border-2 transition-all flex justify-between items-center ${
+                            selectedSession === session.id
+                              ? 'border-evergreen bg-green-50 shadow-md'
+                              : isFull
+                              ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-50'
+                              : 'border-gray-200 hover:border-gold-leaf hover:shadow-md'
+                          }`}
+                        >
+                          <span className="font-semibold text-evergreen">
+                            {session.startTime} - {session.endTime}
                           </span>
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                            session.availableSpots === 0
-                              ? 'bg-gray-400 text-white'
-                              : session.availableSpots < 5
-                              ? 'bg-orange-500 text-white'
-                              : 'bg-gold-leaf text-evergreen'
-                          }`}>
-                            {session.availableSpots === 0 ? 'Full' : session.availableSpots < 5 ? 'Limited' : 'Open'}
-                          </span>
-                        </div>
-                      </button>
-                    ))}
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm text-gray-600 font-medium">
+                              {session.availableSpots} {session.availableSpots === 1 ? 'spot' : 'spots'} remaining
+                            </span>
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
+                              isFull
+                                ? 'bg-red-500 text-white'
+                                : isLimited
+                                ? 'bg-orange-500 text-white'
+                                : 'bg-green-500 text-white'
+                            }`}>
+                              {isFull ? 'Full' : isLimited ? 'Limited' : 'Open'}
+                            </span>
+                          </div>
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
               )
             })}
+
+            {!selectedDate && (
+              <div className="text-center py-8 text-gray-500">
+                <p className="text-lg">Please select a date from the calendar above to view available sessions.</p>
+              </div>
+            )}
+
+            {selectedDate && selectedDateSessions.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <p className="text-lg">No sessions available for the selected date.</p>
+              </div>
+            )}
 
             <div className="mt-6 pt-6 border-t-2 border-gray-200">
               <button 
