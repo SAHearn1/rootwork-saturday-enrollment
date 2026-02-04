@@ -152,10 +152,10 @@ function ConfirmationPageContent() {
               <AlertTriangle className="w-8 h-8 text-evergreen flex-shrink-0 mt-1" />
               <div>
                 <h3 className="text-3xl font-bold text-evergreen mb-2">
-                  🚨 CRITICAL: Apply for Georgia Promise Scholarship
+                  📋 Apply for Georgia Promise Scholarship
                 </h3>
                 <p className="text-lg font-semibold text-evergreen-dark">
-                  Deadline: December 12, 2025 (26 days remaining!)
+                  Follow these steps to complete your application
                 </p>
               </div>
             </div>
@@ -228,7 +228,7 @@ function ConfirmationPageContent() {
                       Open mygeorgiapromise.org
                     </a>
                     <p className="text-sm text-gray-600 mt-2">
-                      Portal is open November 10 - December 12, 2025
+                      Visit the portal to check current application status and availability
                     </p>
                   </div>
                 </div>
@@ -446,10 +446,10 @@ function ConfirmationPageContent() {
                 ⚠️ Important Reminders
               </h5>
               <ul className="text-sm text-red-800 space-y-1 pl-6 list-disc">
-                <li><strong>Application deadline is December 12, 2025</strong> - Don&apos;t miss it!</li>
+                <li>Apply as soon as you have all required documents ready</li>
                 <li>Priority given to families with income ≤ 400% federal poverty level</li>
                 <li>Once approved, you&apos;re in the program until student graduates</li>
-                <li>Funds are distributed quarterly starting July 2025</li>
+                <li>Funds are distributed quarterly</li>
                 <li>Your RootWork registration is confirmed regardless of scholarship approval</li>
               </ul>
             </div>

@@ -166,9 +166,6 @@ export default function RegisterPage() {
                     Apply Now
                     <ExternalLink className="w-4 h-4" />
                   </a>
-                  <span className="text-evergreen-dark font-semibold">
-                    Application Deadline: {promiseScholarshipInfo.applicationDeadline}
-                  </span>
                 </div>
               </div>
             )}
