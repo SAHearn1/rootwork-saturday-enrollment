@@ -5,17 +5,16 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react'
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js'
 import OrderSummary from './OrderSummary'
-import PaymentForm from './PaymentForm'
+import { StripeProvider } from '@/components/StripeProvider'
+import { StripeCardElement } from '@/components/StripeCardElement'
 import {
-  validateCardNumber,
-  validateExpiryDate,
-  validateCVC,
   validateCardholderName,
   validateBillingZip,
   calculatePayment
 } from '@/lib/payment-validation'
-import type { PaymentFormData, PaymentFormErrors } from '@/lib/payment-types'
+import type { PaymentFormErrors } from '@/lib/payment-types'
 import { checkPromiseScholarshipEligibility, promiseScholarshipInfo } from '@/lib/promise-scholarship'
 
 interface StudentFormData {
@@ -29,14 +28,13 @@ interface StudentFormData {
   receivingOtherScholarships: boolean
 }
 
-export default function PaymentPage() {
+function PaymentPageContent() {
   const router = useRouter()
+  const stripe = useStripe()
+  const elements = useElements()
   
-  // State for form data
-  const [formData, setFormData] = useState<PaymentFormData>({
-    cardNumber: '',
-    expiryDate: '',
-    cvc: '',
+  // State for form data (only cardholder name and billing zip now)
+  const [formData, setFormData] = useState({
     cardholderName: '',
     billingZip: ''
   })
@@ -51,6 +49,7 @@ export default function PaymentPage() {
   // State for loading and submission
   const [isProcessing, setIsProcessing] = useState(false)
   const [isGPSEligible, setIsGPSEligible] = useState(false)
+  const [isCardComplete, setIsCardComplete] = useState(false)
   
   // Student and session data from localStorage
   const [studentData, setStudentData] = useState<StudentFormData | null>(null)
@@ -90,40 +89,28 @@ export default function PaymentPage() {
   // Calculate payment amounts
   const payment = calculatePayment(isGPSEligible && paymentType === 'gps', includeCurriculum, paymentType)
 
-  // Handle field changes with real-time validation
-  const handleFieldChange = (field: keyof PaymentFormData, value: string) => {
+  // Handle field changes
+  const handleFieldChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
     
     // Clear error when user starts typing
-    if (errors[field]) {
+    if (errors[field as keyof PaymentFormErrors]) {
       setErrors(prev => {
         const newErrors = { ...prev }
-        delete newErrors[field]
+        delete newErrors[field as keyof PaymentFormErrors]
         return newErrors
       })
     }
   }
 
   // Validate individual field on blur
-  const handleFieldBlur = (field: keyof PaymentFormData) => {
+  const handleFieldBlur = (field: string) => {
     let error: string | undefined
     
-    switch (field) {
-      case 'cardNumber':
-        error = validateCardNumber(formData.cardNumber)
-        break
-      case 'expiryDate':
-        error = validateExpiryDate(formData.expiryDate)
-        break
-      case 'cvc':
-        error = validateCVC(formData.cvc)
-        break
-      case 'cardholderName':
-        error = validateCardholderName(formData.cardholderName)
-        break
-      case 'billingZip':
-        error = validateBillingZip(formData.billingZip)
-        break
+    if (field === 'cardholderName') {
+      error = validateCardholderName(formData.cardholderName)
+    } else if (field === 'billingZip') {
+      error = validateBillingZip(formData.billingZip)
     }
     
     if (error) {
@@ -135,19 +122,15 @@ export default function PaymentPage() {
   const validateForm = (): boolean => {
     const newErrors: PaymentFormErrors = {}
     
-    // Skip card validation if GPS covers everything and no curriculum
+    // Skip validation if GPS covers everything and no curriculum
     if (paymentType === 'gps' && !includeCurriculum) {
       return true
     }
     
-    const cardNumberError = validateCardNumber(formData.cardNumber)
-    if (cardNumberError) newErrors.cardNumber = cardNumberError
-    
-    const expiryError = validateExpiryDate(formData.expiryDate)
-    if (expiryError) newErrors.expiryDate = expiryError
-    
-    const cvcError = validateCVC(formData.cvc)
-    if (cvcError) newErrors.cvc = cvcError
+    // Check if card element is complete
+    if (!isCardComplete) {
+      newErrors.general = 'Please complete your card information'
+    }
     
     const nameError = validateCardholderName(formData.cardholderName)
     if (nameError) newErrors.cardholderName = nameError
@@ -188,8 +171,120 @@ export default function PaymentPage() {
     setErrors({})
     
     try {
-      // Simulate payment processing (in real app, this would call Stripe)
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const sessionId = localStorage.getItem('selectedSessionId')
+      
+      // Handle GPS scholarship with no payment needed
+      if (payment.totalDue === 0) {
+        // GPS covers everything, no payment needed - just save enrollment
+        const enrollmentResponse = await fetch('/api/enrollment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentData: studentData,
+            sessionId: sessionId,
+            paymentIntentId: null,
+            amountPaid: 0,
+            paymentStatus: 'PENDING', // GPS approval pending
+            paymentType: 'gps'
+          })
+        })
+        
+        if (!enrollmentResponse.ok) {
+          throw new Error('Failed to save enrollment')
+        }
+        
+        const { enrollmentId: gpsEnrollmentId } = await enrollmentResponse.json()
+        
+        // Log successful enrollment (enrollmentId used for potential future use)
+        console.log('GPS enrollment created:', gpsEnrollmentId)
+        
+        // Navigate to confirmation
+        const confirmationParams = new URLSearchParams({
+          sessionDate: 'January 15, 2026',
+          sessionTime: '9:00 AM - 12:00 PM',
+          sessionLocation: 'RootWork Community Center',
+          studentName: `${studentData?.firstName || ''} ${studentData?.lastName || ''}`,
+          studentGrade: studentData?.gradeLevel || '',
+          promiseEligible: 'true',
+          includeCurriculum: includeCurriculum.toString(),
+          paymentType: 'gps',
+          amountPaid: '0',
+          balanceDue: '0'
+        })
+        
+        router.push(`/register/confirmation?${confirmationParams.toString()}`)
+        return
+      }
+      
+      // Otherwise, process payment with Stripe
+      if (!stripe || !elements) {
+        throw new Error('Stripe has not loaded yet')
+      }
+      
+      // Step 1: Create Payment Intent
+      const paymentResponse = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: payment.totalDue,
+          metadata: {
+            studentName: `${studentData?.firstName} ${studentData?.lastName}`,
+            sessionId: sessionId,
+            paymentType: paymentType
+          }
+        })
+      })
+
+      if (!paymentResponse.ok) {
+        throw new Error('Failed to create payment intent')
+      }
+
+      const { clientSecret, paymentIntentId } = await paymentResponse.json()
+
+      // Step 2: Confirm payment with Stripe
+      const cardElement = elements.getElement(CardElement)
+      if (!cardElement) {
+        throw new Error('Card element not found')
+      }
+      
+      const { error: stripeError } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: formData.cardholderName,
+            address: {
+              postal_code: formData.billingZip
+            }
+          }
+        }
+      })
+
+      if (stripeError) {
+        throw new Error(stripeError.message)
+      }
+
+      // Step 3: Save enrollment to database
+      const enrollmentResponse = await fetch('/api/enrollment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentData: studentData,
+          sessionId: sessionId,
+          paymentIntentId: paymentIntentId,
+          amountPaid: payment.totalDue,
+          paymentStatus: paymentType === 'deposit' ? 'DEPOSIT_PAID' : 'PAID_IN_FULL',
+          paymentType: paymentType
+        })
+      })
+
+      if (!enrollmentResponse.ok) {
+        throw new Error('Failed to save enrollment')
+      }
+
+      const { enrollmentId: paidEnrollmentId } = await enrollmentResponse.json()
+      
+      // Log successful enrollment (enrollmentId used for potential future use)
+      console.log('Paid enrollment created:', paidEnrollmentId)
       
       // Prepare confirmation data
       const confirmationParams = new URLSearchParams({
@@ -210,7 +305,7 @@ export default function PaymentPage() {
     } catch (error) {
       console.error('Payment error:', error)
       setErrors({
-        general: 'Payment processing failed. Please try again or contact support.'
+        general: error instanceof Error ? error.message : 'Payment processing failed. Please try again or contact support.'
       })
       setIsProcessing(false)
     }
@@ -383,13 +478,82 @@ export default function PaymentPage() {
                 <>
                   <div className="border-t-2 border-gray-200 pt-6 mb-6">
                     <h3 className="text-lg font-bold text-evergreen mb-4">Card Information</h3>
-                    <PaymentForm
-                      formData={formData}
-                      errors={errors}
-                      onFieldChange={handleFieldChange}
-                      onFieldBlur={handleFieldBlur}
-                      disabled={isProcessing}
-                    />
+                    
+                    <div className="space-y-6">
+                      {/* Stripe Card Element */}
+                      <div>
+                        <label className="block text-sm font-semibold text-evergreen mb-2">
+                          Card Details *
+                        </label>
+                        <StripeCardElement
+                          onChange={(complete) => setIsCardComplete(complete)}
+                        />
+                        <p className="text-xs text-gray-600 mt-1">
+                          Enter your card number, expiry date, and CVC
+                        </p>
+                      </div>
+
+                      {/* Cardholder Name */}
+                      <div>
+                        <label
+                          htmlFor="cardholderName"
+                          className="block text-sm font-semibold text-evergreen mb-2"
+                        >
+                          Cardholder Name *
+                        </label>
+                        <input
+                          id="cardholderName"
+                          type="text"
+                          value={formData.cardholderName}
+                          onChange={(e) => handleFieldChange('cardholderName', e.target.value)}
+                          onBlur={() => handleFieldBlur('cardholderName')}
+                          disabled={isProcessing}
+                          placeholder="John Smith"
+                          className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
+                            errors.cardholderName
+                              ? 'border-red-500 focus:border-red-600 bg-red-50'
+                              : 'border-gray-300 focus:border-evergreen'
+                          } ${isProcessing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                        />
+                        {errors.cardholderName && (
+                          <div className="flex items-center gap-2 mt-2 text-red-600">
+                            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                            <span className="text-sm">{errors.cardholderName}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Billing ZIP */}
+                      <div>
+                        <label
+                          htmlFor="billingZip"
+                          className="block text-sm font-semibold text-evergreen mb-2"
+                        >
+                          Billing ZIP Code *
+                        </label>
+                        <input
+                          id="billingZip"
+                          type="text"
+                          value={formData.billingZip}
+                          onChange={(e) => handleFieldChange('billingZip', e.target.value.replace(/\D/g, '').slice(0, 5))}
+                          onBlur={() => handleFieldBlur('billingZip')}
+                          disabled={isProcessing}
+                          placeholder="31401"
+                          maxLength={5}
+                          className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${
+                            errors.billingZip
+                              ? 'border-red-500 focus:border-red-600 bg-red-50'
+                              : 'border-gray-300 focus:border-evergreen'
+                          } ${isProcessing ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                        />
+                        {errors.billingZip && (
+                          <div className="flex items-center gap-2 mt-2 text-red-600">
+                            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                            <span className="text-sm">{errors.billingZip}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
@@ -460,3 +624,13 @@ export default function PaymentPage() {
     </div>
   )
 }
+
+// Main export wrapped with StripeProvider
+export default function PaymentPage() {
+  return (
+    <StripeProvider>
+      <PaymentPageContent />
+    </StripeProvider>
+  )
+}
+
