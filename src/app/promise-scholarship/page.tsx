@@ -18,11 +18,11 @@ const PromiseScholarshipPage = () => {
         </ul>
       </section>
       <section>
-        <h2>2025 Application Timeline</h2>
+        <h2>Application Timeline</h2>
         <ul>
-          <li>Q4 2025: Application opens (November 10, 2025)</li>
-          <li>Q4 2025: Application deadline (December 12, 2025)</li>
-          <li>Q1 2026: Award announcements (February 2026)</li>
+          <li>Applications are reviewed on a rolling basis</li>
+          <li>Award announcements typically occur in February</li>
+          <li>Check the Georgia Promise website for current application periods</li>
         </ul>
       </section>
       <section>
