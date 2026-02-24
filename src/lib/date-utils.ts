@@ -5,9 +5,11 @@
 export interface Session {
   id: string
   date: string
-  gradeLevel: string
+  gradeLevel: string | null
+  programType: string
   startTime: string
   endTime: string
+  location: string
   availableSpots: number
 }
 

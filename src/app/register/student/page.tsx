@@ -17,20 +17,29 @@ import {
 import { RootWorkLogo } from '@/components/RootWorkLogo'
 
 interface StudentFormData {
-  // Section 1: Basic Student Information
+  // Program type (K12 or ADULT)
+  programType: string
+  
+  // Section 1: Basic Information (All)
   firstName: string
   lastName: string
   dateOfBirth: string
-  gradeLevel: string
   gender: string
   
-  // Section 2: School Information
+  // K-12 specific
+  gradeLevel: string
+  
+  // Adult specific
+  email: string
+  phone: string
+  
+  // Section 2: School Information (K-12 only)
   currentSchool: string
   isRisingKindergarten: boolean
   enrolledTwoSemesters: boolean
   receivingOtherScholarships: boolean
   
-  // Section 3: Parent/Guardian Information
+  // Section 3: Parent/Guardian Information (K-12 only)
   parentName: string
   parentEmail: string
   parentPhone: string
@@ -41,28 +50,31 @@ interface StudentFormData {
   yearsInGeorgia: number
   isActiveDutyMilitary: boolean
   
-  // Section 4: Emergency Contact
+  // Section 4: Emergency Contact (All)
   emergencyContactName: string
   emergencyContactPhone: string
   emergencyContactRelationship: string
   
-  // Section 5: Medical & Special Needs
+  // Section 5: Medical & Special Needs (All)
   allergies: string
   medications: string
   specialNeeds: string
   hasIepOr504: string
   
-  // Section 6: Promise Scholarship
+  // Section 6: Promise Scholarship (K-12 only)
   householdIncomeRange: string
   interestedInPromiseScholarship: boolean
 }
 
 const emptyFormData: StudentFormData = {
+  programType: 'K12',
   firstName: '',
   lastName: '',
   dateOfBirth: '',
   gradeLevel: '',
   gender: '',
+  email: '',
+  phone: '',
   currentSchool: '',
   isRisingKindergarten: false,
   enrolledTwoSemesters: false,
@@ -93,15 +105,22 @@ export default function StudentPage() {
   const [formData, setFormData] = useState<StudentFormData>(emptyFormData)
   const [eligibility, setEligibility] = useState<PromiseScholarshipEligibility | null>(null)
 
-  // Load form data from localStorage on mount
+  // Load program type and form data from localStorage on mount
   useEffect(() => {
+    // Load program type from registration page
+    const programType = localStorage.getItem('selectedProgramType') || 'K12'
+    
     const savedData = localStorage.getItem('studentFormData')
     if (savedData) {
       try {
-        setFormData(JSON.parse(savedData))
+        const parsed = JSON.parse(savedData)
+        setFormData({ ...parsed, programType })
       } catch (e) {
         console.error('Failed to parse saved form data:', e)
+        setFormData({ ...emptyFormData, programType })
       }
+    } else {
+      setFormData({ ...emptyFormData, programType })
     }
   }, [])
 
@@ -110,9 +129,9 @@ export default function StudentPage() {
     localStorage.setItem('studentFormData', JSON.stringify(formData))
   }, [formData])
 
-  // Check eligibility when relevant fields change
+  // Check eligibility when relevant fields change (K12 only)
   useEffect(() => {
-    if (formData.currentSchool && formData.yearsInGeorgia >= 0) {
+    if (formData.programType === 'K12' && formData.currentSchool && formData.yearsInGeorgia >= 0) {
       const result = checkPromiseScholarshipEligibility(
         formData.currentSchool,
         formData.yearsInGeorgia,
@@ -123,6 +142,7 @@ export default function StudentPage() {
       setEligibility(result)
     }
   }, [
+    formData.programType,
     formData.currentSchool,
     formData.yearsInGeorgia,
     formData.enrolledTwoSemesters,
@@ -135,17 +155,34 @@ export default function StudentPage() {
   }
 
   const validateSection = (section: number): boolean => {
+    const isK12 = formData.programType === 'K12'
+    const isAdult = formData.programType === 'ADULT'
+    
     switch (section) {
       case 1:
-        return !!(
-          formData.firstName &&
-          formData.lastName &&
-          formData.dateOfBirth &&
-          formData.gradeLevel
-        )
+        // Basic info - different requirements for K12 vs Adult
+        if (isK12) {
+          return !!(
+            formData.firstName &&
+            formData.lastName &&
+            formData.dateOfBirth &&
+            formData.gradeLevel
+          )
+        } else {
+          return !!(
+            formData.firstName &&
+            formData.lastName &&
+            formData.dateOfBirth &&
+            formData.email &&
+            formData.phone
+          )
+        }
       case 2:
-        return !!formData.currentSchool
+        // School info - K12 only
+        return isAdult || !!formData.currentSchool
       case 3:
+        // Parent/Guardian - K12 only
+        if (isAdult) return true // Skip for adults
         return !!(
           formData.parentName &&
           formData.parentEmail &&
@@ -157,13 +194,15 @@ export default function StudentPage() {
           formData.yearsInGeorgia >= 0
         )
       case 4:
+        // Emergency contact - required for all
         return !!(
           formData.emergencyContactName &&
           formData.emergencyContactPhone &&
           formData.emergencyContactRelationship
         )
       case 5:
-        return !!formData.hasIepOr504
+        // Medical info - hasIepOr504 required only for K12
+        return isAdult || !!formData.hasIepOr504
       case 6:
         return true // Final review, always valid
       default:
@@ -173,16 +212,48 @@ export default function StudentPage() {
 
   const goToNextSection = () => {
     if (validateSection(currentSection)) {
-      setCurrentSection(prev => Math.min(prev + 1, 6))
+      const isAdult = formData.programType === 'ADULT'
+      let nextSection = currentSection + 1
+      
+      // Skip K12-only sections for Adult programs
+      if (isAdult) {
+        // Skip sections 2 (School) and 3 (Parent/Guardian)
+        if (nextSection === 2 || nextSection === 3) {
+          nextSection = 4
+        }
+        // Skip section 6 (Promise Scholarship)
+        else if (nextSection === 6) {
+          // Go directly to payment since section 5 is the last for adults
+          handleContinueToPayment()
+          return
+        }
+      }
+      
+      setCurrentSection(Math.min(nextSection, 6))
     }
   }
 
   const goToPreviousSection = () => {
-    setCurrentSection(prev => Math.max(prev - 1, 1))
+    const isAdult = formData.programType === 'ADULT'
+    let prevSection = currentSection - 1
+    
+    // Skip K12-only sections for Adult programs when going back
+    if (isAdult && (prevSection === 2 || prevSection === 3)) {
+      prevSection = 1
+    }
+    
+    setCurrentSection(Math.max(prevSection, 1))
   }
 
   const handleContinueToPayment = () => {
     router.push('/register/payment')
+  }
+
+  // Calculate progress percentage for Adult programs
+  const getAdultProgressPercentage = (section: number): string => {
+    if (section === 1) return '33%'
+    if (section === 4) return '66%'
+    return '100%'
   }
 
   const isSchoolEligible = (schoolName: string) => {
@@ -221,46 +292,84 @@ export default function StudentPage() {
         {/* Progress Indicator */}
         <div className="bg-white rounded-xl p-4 md:p-6 mb-6 shadow-lg">
           <div className="flex justify-between items-center mb-4">
-            {[1, 2, 3, 4, 5, 6].map((section) => (
-              <div key={section} className="flex flex-col items-center flex-1">
-                <div
-                  className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-                    section === currentSection
-                      ? 'bg-evergreen text-white scale-110'
-                      : section < currentSection
-                      ? 'bg-gold-leaf text-evergreen'
-                      : 'bg-gray-200 text-gray-500'
-                  }`}
-                >
-                  {section < currentSection ? '✓' : section}
+            {formData.programType === 'K12' ? (
+              // K12: All 6 sections
+              [1, 2, 3, 4, 5, 6].map((section) => (
+                <div key={section} className="flex flex-col items-center flex-1">
+                  <div
+                    className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                      section === currentSection
+                        ? 'bg-evergreen text-white scale-110'
+                        : section < currentSection
+                        ? 'bg-gold-leaf text-evergreen'
+                        : 'bg-gray-200 text-gray-500'
+                    }`}
+                  >
+                    {section < currentSection ? '✓' : section}
+                  </div>
+                  <div className="text-xs mt-1 text-center hidden md:block text-gray-600">
+                    {section === 1 && 'Student'}
+                    {section === 2 && 'School'}
+                    {section === 3 && 'Parent'}
+                    {section === 4 && 'Emergency'}
+                    {section === 5 && 'Medical'}
+                    {section === 6 && 'Review'}
+                  </div>
                 </div>
-                <div className="text-xs mt-1 text-center hidden md:block text-gray-600">
-                  {section === 1 && 'Student'}
-                  {section === 2 && 'School'}
-                  {section === 3 && 'Parent'}
-                  {section === 4 && 'Emergency'}
-                  {section === 5 && 'Medical'}
-                  {section === 6 && 'Review'}
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              // Adult: Only sections 1, 4, 5
+              [1, 4, 5].map((section, index) => {
+                // Map display position to actual section number
+                const displayPosition = index + 1
+                const isCurrentOrPast = currentSection >= section
+                const isCurrent = currentSection === section
+                
+                return (
+                  <div key={section} className="flex flex-col items-center flex-1">
+                    <div
+                      className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                        isCurrent
+                          ? 'bg-evergreen text-white scale-110'
+                          : isCurrentOrPast && section < currentSection
+                          ? 'bg-gold-leaf text-evergreen'
+                          : 'bg-gray-200 text-gray-500'
+                      }`}
+                    >
+                      {isCurrentOrPast && section < currentSection ? '✓' : displayPosition}
+                    </div>
+                    <div className="text-xs mt-1 text-center hidden md:block text-gray-600">
+                      {section === 1 && 'Info'}
+                      {section === 4 && 'Emergency'}
+                      {section === 5 && 'Medical'}
+                    </div>
+                  </div>
+                )
+              })
+            )}
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
               className="bg-gradient-to-r from-evergreen to-gold-leaf h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(currentSection / 6) * 100}%` }}
+              style={{ 
+                width: formData.programType === 'K12' 
+                  ? `${(currentSection / 6) * 100}%`
+                  : getAdultProgressPercentage(currentSection)
+              }}
             />
           </div>
         </div>
 
         {/* Form Sections */}
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-          {/* Section 1: Basic Student Information */}
+          {/* Section 1: Basic Information */}
           {currentSection === 1 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-6">
                 <User className="w-8 h-8 text-evergreen" />
-                <h2 className="text-2xl font-bold text-evergreen">Basic Student Information</h2>
+                <h2 className="text-2xl font-bold text-evergreen">
+                  {formData.programType === 'K12' ? 'Basic Student Information' : 'Basic Information'}
+                </h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -305,23 +414,55 @@ export default function StudentPage() {
                   />
                 </div>
 
+                {formData.programType === 'K12' ? (
+                  <div>
+                    <label className="block text-sm font-semibold text-evergreen mb-2 flex items-center gap-2">
+                      <GraduationCap className="w-4 h-4" />
+                      Grade Level *
+                    </label>
+                    <select
+                      value={formData.gradeLevel}
+                      onChange={(e) => updateField('gradeLevel', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-evergreen focus:outline-none"
+                    >
+                      <option value="">Select grade level</option>
+                      {gradeLevels.map(grade => (
+                        <option key={grade} value={grade}>{grade === 'K' ? 'Kindergarten' : `Grade ${grade}`}</option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-semibold text-evergreen mb-2 flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => updateField('email', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-evergreen focus:outline-none"
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {formData.programType === 'ADULT' && (
                 <div>
                   <label className="block text-sm font-semibold text-evergreen mb-2 flex items-center gap-2">
-                    <GraduationCap className="w-4 h-4" />
-                    Grade Level *
+                    <Phone className="w-4 h-4" />
+                    Phone Number *
                   </label>
-                  <select
-                    value={formData.gradeLevel}
-                    onChange={(e) => updateField('gradeLevel', e.target.value)}
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => updateField('phone', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-evergreen focus:outline-none"
-                  >
-                    <option value="">Select grade level</option>
-                    {gradeLevels.map(grade => (
-                      <option key={grade} value={grade}>{grade === 'K' ? 'Kindergarten' : `Grade ${grade}`}</option>
-                    ))}
-                  </select>
+                    placeholder="(555) 123-4567"
+                  />
                 </div>
-              </div>
+              )}
 
               <div>
                 <label className="block text-sm font-semibold text-evergreen mb-2">
@@ -342,8 +483,8 @@ export default function StudentPage() {
             </div>
           )}
 
-          {/* Section 2: School Information */}
-          {currentSection === 2 && (
+          {/* Section 2: School Information - K12 only */}
+          {formData.programType === 'K12' && currentSection === 2 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-6">
                 <School className="w-8 h-8 text-evergreen" />
@@ -472,8 +613,8 @@ export default function StudentPage() {
             </div>
           )}
 
-          {/* Section 3: Parent/Guardian Information */}
-          {currentSection === 3 && (
+          {/* Section 3: Parent/Guardian Information - K12 only */}
+          {formData.programType === 'K12' && currentSection === 3 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-6">
                 <Users className="w-8 h-8 text-evergreen" />
@@ -745,8 +886,8 @@ export default function StudentPage() {
             </div>
           )}
 
-          {/* Section 6: Promise Scholarship Interest & Review */}
-          {currentSection === 6 && (
+          {/* Section 6: Promise Scholarship Interest & Review - K12 only */}
+          {formData.programType === 'K12' && currentSection === 6 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-6">
                 <FileText className="w-8 h-8 text-evergreen" />
@@ -863,16 +1004,9 @@ export default function StudentPage() {
               Previous
             </button>
 
-            {currentSection < 6 ? (
-              <button
-                onClick={goToNextSection}
-                disabled={!validateSection(currentSection)}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-evergreen to-evergreen-light text-canvas-light rounded-lg font-semibold transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            ) : (
+            {/* Show "Continue to Payment" for K12 on section 6, or Adult on section 5 */}
+            {(formData.programType === 'K12' && currentSection === 6) || 
+             (formData.programType === 'ADULT' && currentSection === 5) ? (
               <button
                 onClick={handleContinueToPayment}
                 className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-gold-leaf to-gold-leaf-dark text-evergreen rounded-lg font-bold text-lg transition-all hover:shadow-xl"
@@ -880,6 +1014,15 @@ export default function StudentPage() {
                 <Shield className="w-6 h-6" />
                 Continue to Payment
                 <ArrowRight className="w-6 h-6" />
+              </button>
+            ) : (
+              <button
+                onClick={goToNextSection}
+                disabled={!validateSection(currentSection)}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-evergreen to-evergreen-light text-canvas-light rounded-lg font-semibold transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+                <ArrowRight className="w-5 h-5" />
               </button>
             )}
           </div>

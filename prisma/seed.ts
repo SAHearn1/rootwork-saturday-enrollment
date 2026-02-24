@@ -1,4 +1,4 @@
-import { PrismaClient, GradeLevel } from '@prisma/client'
+import { PrismaClient, GradeLevel, ProgramType, Location } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -37,10 +37,24 @@ async function main() {
     { grade: 'G912', capacity: 20 },
   ]
 
+  // Locations to rotate through
+  const locations: Location[] = [
+    'WW_LAW_CENTER',
+    'UCA',
+    'CARVER_HEIGHTS',
+    'LIBERTY_CITY',
+    'TATUMVILLE',
+  ]
+
   let sessionCount = 0
 
+  // Create K-12 sessions
   for (const date of januarySaturdays) {
     for (const time of timeSlots) {
+      // Rotate through locations
+      const locationIndex = sessionCount % locations.length
+      const location = locations[locationIndex]
+      
       for (const gradeConfig of gradeLevels) {
         await prisma.session.create({
           data: {
@@ -48,8 +62,9 @@ async function main() {
             startTime: time.start,
             endTime: time.end,
             gradeLevel: gradeConfig.grade,
+            programType: 'K12',
             capacity: gradeConfig.capacity,
-            location: 'WW Law Center',
+            location,
           },
         })
         sessionCount++
@@ -57,7 +72,38 @@ async function main() {
     }
   }
 
-  console.log(`✅ Created ${sessionCount} sessions`)
+  console.log(`✅ Created ${sessionCount} K-12 sessions`)
+
+  // Create Adult program sessions (no grade level)
+  const adultSessionCount = sessionCount
+  for (const date of januarySaturdays) {
+    // Create 2 adult sessions per Saturday at different times
+    const adultTimeSlots = [
+      { start: '9:00 AM', end: '11:00 AM' },
+      { start: '2:00 PM', end: '4:00 PM' },
+    ]
+    
+    for (const time of adultTimeSlots) {
+      const locationIndex = sessionCount % locations.length
+      const location = locations[locationIndex]
+      
+      await prisma.session.create({
+        data: {
+          date,
+          startTime: time.start,
+          endTime: time.end,
+          gradeLevel: null, // Adult programs don't have grade levels
+          programType: 'ADULT',
+          capacity: 25,
+          location,
+        },
+      })
+      sessionCount++
+    }
+  }
+
+  console.log(`✅ Created ${sessionCount - adultSessionCount} Adult sessions`)
+  console.log(`✅ Total sessions created: ${sessionCount}`)
   console.log('🎉 Seeding complete!')
 }
 
