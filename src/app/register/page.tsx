@@ -6,6 +6,7 @@ import { promiseScholarshipInfo } from '@/lib/promise-scholarship'
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
 import { RootWorkLogo } from '@/components/RootWorkLogo'
 import { Calendar } from '@/components/Calendar'
+import { OnboardingGuide } from '@/components/OnboardingGuide'
 import { getAvailableDatesFromSessions } from '@/lib/date-utils'
 
 interface Session {
@@ -131,6 +132,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-evergreen-dark via-evergreen to-evergreen-light p-6">
+      <OnboardingGuide />
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-gradient-to-br from-evergreen-dark to-evergreen p-10 rounded-2xl shadow-xl mb-8">
@@ -146,7 +148,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Program Type Selection */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div id="program-type-section" className="bg-white rounded-xl shadow-lg p-6 mb-6">
           <h3 className="text-xl font-bold text-evergreen mb-4 flex items-center gap-2">
             <span className="text-2xl">📚</span>
             Select Program Type
@@ -299,15 +301,17 @@ export default function RegisterPage() {
 
         <div className="grid grid-cols-1 gap-6">
           {/* Calendar Date Selection */}
+          <div id="calendar-section">
           <Calendar
             availableDates={availableDates}
             selectedDate={selectedDate}
             onDateSelect={setSelectedDate}
             sessionsByDate={sessionsByDate}
           />
+          </div>
 
           {/* Session List */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div id="sessions-section" className="bg-white rounded-2xl shadow-lg p-6">
             <div className="bg-gradient-to-r from-evergreen to-evergreen-light text-canvas-light p-4 rounded-xl mb-6">
               <h3 className="text-xl font-bold">Available Sessions</h3>
               <p className="text-gold-leaf text-sm">
@@ -449,8 +453,8 @@ export default function RegisterPage() {
               </div>
             )}
 
-            <div className="mt-6 pt-6 border-t-2 border-gray-200">
-              <button 
+            <div id="continue-button" className="mt-6 pt-6 border-t-2 border-gray-200">
+              <button
                 onClick={handleContinue}
                 disabled={!selectedSession}
                 className="w-full py-4 px-6 bg-gradient-to-br from-evergreen to-evergreen-light text-canvas-light rounded-xl font-bold text-lg transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
