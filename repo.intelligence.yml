@@ -1,0 +1,46 @@
+repository_name: rootwork-saturday-enrollment
+purpose: "Registration portal for RootWork Framework Saturday Enrichment Program"
+user_facing_surfaces:
+  - "Registration web app (Next.js 14)"
+entrypoints:
+  - "app/ (Next.js App Router)"
+  - "prisma/"
+ui_layer: "React 18 + Next.js 14 + Tailwind CSS + react-hook-form"
+api_layer: "Next.js API routes"
+auth_layer: "NextAuth (@next-auth ^4.24.0)"
+service_layer: "TODO — requires Phase C deep read"
+data_layer: "PostgreSQL + Prisma"
+infrastructure_layer: "TODO — requires Phase C deep read"
+external_integrations:
+  - "NextAuth (authentication)"
+  - "Stripe (payments + @stripe/react-stripe-js)"
+  - "Resend (transactional email)"
+  - "PostgreSQL (data store)"
+environment_variables_referenced:
+  - "DATABASE_URL"
+  - "NEXTAUTH_SECRET"
+  - "STRIPE_SECRET_KEY"
+  - "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
+  - "RESEND_API_KEY"
+key_routes:
+  - "TODO — requires Phase C deep read"
+key_services:
+  - "TODO — requires Phase C deep read"
+key_jobs_or_workers: []
+critical_dependencies:
+  - "next ^14.2.0"
+  - "@prisma/client ^5.11.0"
+  - "stripe ^14.21.0"
+  - "next-auth ^4.24.0"
+  - "resend ^3.2.0"
+likely_failure_hotspots:
+  - "NEXTAUTH_SECRET mismatch between environments"
+  - "Stripe key (test vs live) mismatch"
+  - "DATABASE_URL missing or Prisma not generated"
+  - "Resend API key missing"
+local_dev_commands:
+  - "npm run dev"
+build_commands:
+  - "npm run build"
+test_commands:
+  - "TODO — no test script detected in package.json"
