@@ -1,4 +1,4 @@
-# CLAUDE.md â€” rootwork-saturday-enrollment
+# CLAUDE.md — rootwork-saturday-enrollment
 
 > Agent briefing. Read before touching code.
 > Governance hub: `SAHearn1/rwfw-agent-governance`
@@ -48,3 +48,9 @@ RESEND_API_KEY
 
 ## Governance
 Follow `AGENTS.md`. Debug via `docs/AGENT_DEBUG_RUNBOOK.md`.
+
+## Operating Rules
+
+**If you resolve a bug during this session, you MUST append an entry to `docs/INCIDENTS.md` before the session ends. This is non-negotiable. Session is not complete until the entry is committed.**
+
+See Rule 7 in `AGENTS.md` (governance hub: `SAHearn1/rwfw-agent-governance`) for the full incident logging protocol.
